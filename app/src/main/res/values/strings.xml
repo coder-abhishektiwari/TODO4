@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">TODO</string>
+    <string name="tasks">Tasks</string>
+    <string name="task_name">Enter task name</string>
+    <string name="task_description">Enter task Description</string>
+    <string name="save">Save</string>
+    <string name="task_description1">Task Description</string>
+    <string name="task_title">Task Title</string>
+    <string name="enter_task_title">Enter task title</string>
+    <string name="enter_task_description">Enter task description</string>
+    <string name="target_date_and_time">Pick Date and Time</string>
+    <string name="pick_date_and_time">Pick Date and Time</string>
+    <string name="categories">Categories</string>
+    <string name="delete_task">Delete Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="addTask">ADD TASK</string>
+    <string name="urgent">Urgent</string>
+    <string name="save_task">Save Task</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_task">New Task</string>
+    <string name="blank" />
+    <string name="completed">Completed</string>
+</resources>
