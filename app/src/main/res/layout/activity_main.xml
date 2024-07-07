@@ -4,40 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
 
+
     <LinearLayout
-        android:id="@id/header"
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/header_background"
-        android:paddingBottom="10dp">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/Tasks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/tasks"
-                android:textSize="35sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
-            <ImageView
-                android:id="@+id/imgDP"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/image_background"
-                android:src="@drawable/ic_launcher_foreground"
-                android:layout_alignParentRight="true"
-                android:layout_margin="15dp"/>
-
-        </RelativeLayout>
+        android:paddingBottom="1dp"
+        android:layout_below="@+id/head"
+        android:translationY="-150dp">
 
 
         <RelativeLayout
@@ -47,7 +27,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="4dp"
             android:padding="10dp"
             android:background="@drawable/background">
 
@@ -56,7 +36,20 @@
                 android:layout_width="127dp"
                 android:layout_height="107dp"
                 android:progressTintMode="multiply"
-                android:progressBackgroundTint="@color/yellow"/>
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"/>
+            <TextView
+                android:id="@+id/progressText"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/color_primary"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="30dp"
+                android:textAlignment="center"/>
 
 
             <LinearLayout
@@ -70,7 +63,8 @@
                     android:id="@+id/txtTaskAvailable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Tasks Available" />
+                    android:text="0 Tasks Available"
+                    android:textColor="@color/black"/>
 
 
                 <ProgressBar
@@ -78,26 +72,28 @@
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:progressBackgroundTint="@color/blue"/>
+                    android:progressBackgroundTint="@color/color_primary"/>
 
                 <TextView
                     android:id="@+id/txtTaskCompleted"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Tasks Completed out of 0" />
+                    android:text="0 Tasks Completed out of 0"
+                    android:textColor="@color/black"/>
 
                 <ProgressBar
                     android:id="@+id/progressTaskCompleted"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:progressBackgroundTint="@color/color_primary"/>
+                    android:progressBackgroundTint="@color/blue"/>
 
                 <TextView
                     android:id="@+id/txtTaskPending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Tasks Pending out of 0" />
+                    android:text="0 Tasks Active out of 0"
+                    android:textColor="@color/black"/>
 
                 <ProgressBar
                     android:id="@+id/progressTaskPending"
@@ -109,26 +105,87 @@
 
 
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/expend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/baseline_arrow_drop_down_24"/>
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_primary">
 
+        <TextView
+            android:id="@+id/Tasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/tasks"
+            android:textSize="35sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/imgDP"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/image_background"
+            android:src="@drawable/ic_launcher_foreground"
+            android:layout_alignParentRight="true"
+            android:layout_margin="15dp"/>
+
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/head"
         android:layout_above="@+id/floatingButton"
-        android:layout_below="@+id/header"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="5dp"
         android:clipToPadding="false"
         android:padding="8dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:visibility="gone"/>
+    <RelativeLayout
+        android:id="@+id/intro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/head"
+        android:layout_above="@+id/floatingButton"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="5dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="click arrow to expand task status"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No task here \n Click + to add new task"
+            android:textAlignment="center"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"

@@ -1,28 +1,46 @@
 package com.example.todo;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.todo.Adapter.RecyclerViewAdapter;
 import com.example.todo.Database.DBHandler;
 import com.example.todo.Model.TaskModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnTaskClickListener, RecyclerViewAdapter.TaskUpdateListener {
-    ImageView imgDP;
+    ImageView imgDP, expand;
     TextView txtTaskAvailable, txtTaskCompleted, txtTaskPending;
     TextView txtIndicationCompleted;
+    private ProgressBar progressBarCircular;
+    private TextView progressText;
     CheckBox checkBox;
+    LinearLayout header;
+    RelativeLayout head, intro;
+    int flag = 0;
 
     ProgressBar progressTaskAvailable, progressTaskCompleted, progressTaskPending;
     RecyclerView recyclerView;
@@ -43,19 +61,40 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         completedTasks = db.getAllCompletedTasks();
 
         initializeViews();
+
+
+        expand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dropDownHeader();
+            }
+        });
         setupRecyclerView();
         updateTaskCounters();
+        updateTaskProgress();
 
         floatingButton = findViewById(R.id.floatingButton);
 
-        floatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddTaskActivity.class));
-                finish();
-            }
+        floatingButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, AddTaskActivity.class));
         });
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshTaskList();
+        noTaskSwitchRecyclerView();
+    }
+
+
+
+
+
+
+
+
+
+
     private void initializeViews() {
         imgDP = findViewById(R.id.imgDP);
         txtTaskAvailable = findViewById(R.id.txtTaskAvailable);
@@ -67,12 +106,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView = findViewById(R.id.recyclerView);
         txtIndicationCompleted = findViewById(R.id.txtIndicateCompleted);
         checkBox = findViewById(R.id.checkBoxCompleted);
-
+        progressBarCircular = findViewById(R.id.progressBar);
+        progressText = findViewById(R.id.progressText);
+        expand = findViewById(R.id.expend);
+        header = findViewById(R.id.header);
+        head = findViewById(R.id.head);
+        head.bringToFront();
+        intro = findViewById(R.id.intro);
     }
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecyclerViewAdapter(this, taskList, this, this);
         recyclerView.setAdapter(adapter);
+        noTaskSwitchRecyclerView();
+        refreshTaskList();
     }
     @Override
     public void onEditClick(int position) {
@@ -80,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
         intent.putExtra("task_id", task.getId());
         startActivity(intent);
-        finish();
     }
     @Override
     public void onDeleteClick(int position) {
@@ -90,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         adapter.notifyItemRemoved(position);
         refreshTaskList();
         updateTaskCounters();
+        updateTaskProgress();
+        noTaskSwitchRecyclerView();
     }
     @Override
     public void onCompletionClick(int position) {
@@ -113,9 +161,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public void onTaskUpdated() {
         taskList.clear();
         taskList.addAll(db.getAllTask());
-        adapter.notifyDataSetChanged();
-        updateTaskCounters();
+        recyclerView.post(() -> {
+            updateTaskCounters();
+            updateTaskProgress();
+        });
     }
+
     public void updateTaskCounters() {
         if (db != null){
             int completedCount = 0;
@@ -128,17 +179,55 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 }
             }
             int totalTasks = db.getTasksCount();
-            completedCount = db.getAllCompletedTasks().size(); // Number of completed tasks
-            pendingCount = totalTasks - completedCount; // Number of pending tasks
+            completedCount = db.getAllCompletedTasks().size();
+            pendingCount = totalTasks - completedCount;
 
             txtTaskAvailable.setText(totalTasks + " Tasks Available");
             txtTaskCompleted.setText(completedCount + " Tasks Completed out of " + totalTasks);
-            txtTaskPending.setText(pendingCount + " Tasks Pending out of " + totalTasks);
+            txtTaskPending.setText(pendingCount + " Tasks Active out of " + totalTasks);
         } else {
             Log.e("MainActivity", "Database handler is null");
         }
 
 
+    }
+    private void updateTaskProgress() {
+        int totalTasks = db.getTasksCount();
+        int completedTasks = db.getAllCompletedTasks().size();
+        int progress = (int) ((completedTasks / (float) totalTasks) * 100);
+
+        progressBarCircular.setMax(100);
+        progressBarCircular.setProgress(progress);
+        progressText.setText(progress + "% Completed");
+
+    }
+
+    public void dropDownHeader(){
+
+        if (flag == 0){
+            //header.setTranslationY(0);
+
+            header.animate().translationYBy(280);
+            header.bringToFront();
+            expand.setImageResource(R.drawable.baseline_arrow_drop_up_24);
+            flag = 1;
+        }else{
+            //header.setTranslationY(-280);
+            head.bringToFront();
+            header.animate().translationYBy(-280);
+            expand.setImageResource(R.drawable.baseline_arrow_drop_down_24);
+            flag = 0;
+        }
+    }
+
+    public void noTaskSwitchRecyclerView(){
+        if(taskList.isEmpty()){
+            recyclerView.setVisibility(View.INVISIBLE);
+            intro.setVisibility(View.VISIBLE);
+        }else{
+            recyclerView.setVisibility(View.VISIBLE);
+            intro.setVisibility(View.INVISIBLE);
+        }
     }
 
 }

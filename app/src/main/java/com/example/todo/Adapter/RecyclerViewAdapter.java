@@ -24,6 +24,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  {
     private final List<TaskModel> taskList;
+    private List<TaskModel> mData;
     private Context context;
     private DBHandler dbHandler;
     private OnTaskClickListener onTaskClickListener;
@@ -32,7 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public RecyclerViewAdapter(Context context, List<TaskModel> taskList, OnTaskClickListener onTaskClickListener, TaskUpdateListener taskUpdateListener) {
         this.context = context;
         this.taskList = taskList;
-        this.dbHandler = new DBHandler(context); // Initialize DBHandler
+        this.dbHandler = new DBHandler(context);
         this.onTaskClickListener = onTaskClickListener;
         this.taskUpdateListener = taskUpdateListener;
     }
@@ -56,14 +57,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.checkBoxCompleted.setOnCheckedChangeListener(null);
         holder.checkBoxCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
             task.setCompleted(isChecked);
-            dbHandler.updateTask(task); // Assuming you have an updateTask method in dbHandler
-            notifyItemChanged(position); // Notify adapter about the changed item
-
+            dbHandler.updateTask(task);
             if (taskUpdateListener != null) {
-                taskUpdateListener.onTaskUpdated(); // Notify the activity to update counters
+                taskUpdateListener.onTaskUpdated();
             }
-            //MainActivity main = new MainActivity();
-            //main.updateTaskCounters(); // Update task counters or any other UI elements if needed
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -75,9 +72,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.edit.setOnClickListener(v -> onTaskClickListener.onEditClick(position));
         holder.delete.setOnClickListener(v -> onTaskClickListener.onDeleteClick(position));
     }
+
+
     @Override
     public int getItemCount() {
         return taskList.size();
+    }
+
+    // Method to update data in the adapter
+    public void setData(List<TaskModel> data) {
+        this.mData = data;
+        notifyDataSetChanged(); // Notify RecyclerView that data has changed
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

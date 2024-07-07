@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".AddTaskActivity">
 
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textColor="@color/sky_blue"
-            android:textSize="17sp"/>
+            android:textSize="20sp"/>
         <TextView
             android:id="@+id/newTaskWindow"
             android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_centerInParent="true"
-            android:textSize="17sp"/>
+            android:textSize="20sp"/>
         <!-- Button to Add/Update Task -->
         <TextView
             android:id="@+id/buttonSaveTask"
@@ -37,7 +37,7 @@
             android:layout_gravity="end"
             android:text="@string/save"
             android:textColor="@color/sky_blue"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:layout_alignParentEnd="true"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>
@@ -53,9 +53,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/task_title"
+            android:textStyle="bold"
             android:layout_marginStart="25dp"
             android:layout_marginTop="16dp"
-            android:textColor="@color/grey"/>
+            android:textColor="@color/color_primary"/>
         <EditText
             android:id="@+id/editTextTaskTitle"
             android:layout_width="match_parent"
@@ -66,6 +67,7 @@
             android:autofillHints=""
             android:background="@drawable/edit_text_background"
             android:hint="@string/enter_task_title"
+            android:textColorHint="@color/grey"
             android:inputType="text"
             android:textSize="20sp"
             android:padding="10dp"
@@ -80,7 +82,8 @@
             android:text="@string/task_description"
             android:layout_marginStart="25dp"
             android:layout_marginTop="16dp"
-            android:textColor="@color/grey"/>
+            android:textColor="@color/color_primary"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/editTextTaskDescription"
@@ -89,6 +92,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="25dp"
+            android:textColorHint="@color/grey"
             android:padding="10dp"
             android:background="@drawable/edit_text_background"
             android:hint="@string/enter_task_description"
@@ -104,7 +108,8 @@
             android:text="@string/target_date_and_time"
             android:layout_marginStart="25dp"
             android:layout_marginTop="16dp"
-            android:textColor="@color/grey"/>
+            android:textColor="@color/color_primary"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/buttonPickDateTime"
@@ -115,9 +120,26 @@
             android:text="@string/pick_date_and_time"
             android:gravity="center"
             android:padding="10dp"
-            android:background="@android:color/white"
+            android:background="@drawable/edit_text_background"
             android:textColor="@android:color/black"
             android:layout_marginEnd="25dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_priority"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/color_primary"
+            android:textStyle="bold"/>
+        <Spinner
+            android:id="@+id/prioritySpinner"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
+            android:entries="@array/priority_array" />
 
 
     </LinearLayout>

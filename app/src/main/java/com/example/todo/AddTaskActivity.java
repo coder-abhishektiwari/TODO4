@@ -6,9 +6,11 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ public class AddTaskActivity extends Activity {
     SimpleDateFormat timeFormat;
     Context context;
     DBHandler db;
+    private Spinner prioritySpinner;
 
     TaskModel taskToUpdate; // Hold the task to be updated, if editing
 
@@ -50,7 +53,6 @@ public class AddTaskActivity extends Activity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
                 finish();
             }
         });
@@ -64,7 +66,7 @@ public class AddTaskActivity extends Activity {
                 edtTaskTitle.setText(taskToUpdate.getTaskTitle());
                 edtTaskDescription.setText(taskToUpdate.getTaskDescription());
                 btnPickDateTime.setText(taskToUpdate.getDateTime());
-                // No need to handle isCompleted here as it's not editable from this activity
+                prioritySpinner.setSelection(Integer.parseInt(taskToUpdate.getPriority()));
             }
         }
     }
@@ -73,6 +75,7 @@ public class AddTaskActivity extends Activity {
         edtTaskTitle = findViewById(R.id.editTextTaskTitle);
         edtTaskDescription = findViewById(R.id.editTextTaskDescription);
         btnPickDateTime = findViewById(R.id.buttonPickDateTime);
+        prioritySpinner = findViewById(R.id.prioritySpinner);
         btnSaveTask = findViewById(R.id.buttonSaveTask);
         cancel = findViewById(R.id.cancel);
     }
@@ -119,6 +122,7 @@ public class AddTaskActivity extends Activity {
             @Override
             public void onClick(View v) {
                 saveTask();
+                finish();
             }
         });
     }
@@ -126,6 +130,7 @@ public class AddTaskActivity extends Activity {
         String title = edtTaskTitle.getText().toString();
         String description = edtTaskDescription.getText().toString();
         String dateTime = btnPickDateTime.getText().toString();
+        Integer priority = prioritySpinner.getSelectedItemPosition();
 
         if (title.isEmpty() || description.isEmpty() || dateTime.isEmpty()) {
             Toast.makeText(context, "Please enter all details", Toast.LENGTH_SHORT).show();
@@ -136,6 +141,7 @@ public class AddTaskActivity extends Activity {
                 task.setTaskTitle(title);
                 task.setTaskDescription(description);
                 task.setDateTime(dateTime);
+                task.setPriority(String.valueOf(priority));
                 task.setCompleted(false); // Default to not completed
 
                 db.addTask(task);
@@ -145,11 +151,12 @@ public class AddTaskActivity extends Activity {
                 taskToUpdate.setTaskTitle(title);
                 taskToUpdate.setTaskDescription(description);
                 taskToUpdate.setDateTime(dateTime);
+                taskToUpdate.setPriority(String.valueOf(priority));
 
                 db.updateTask(taskToUpdate);
                 Toast.makeText(context, "Task updated", Toast.LENGTH_SHORT).show();
             }
-            startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+            setResult(RESULT_OK);
             finish();
         }
     }
